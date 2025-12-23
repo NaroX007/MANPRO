@@ -13,6 +13,7 @@ use PHPUnit\Runner\Extension\ExtensionBootstrapper;
 use PHPUnit\Runner\Extension\Facade as ExtensionFacade;
 use PHPUnit\Runner\Extension\PharLoader;
 use PHPUnit\Runner\PhptTestCase;
+use PHPUnit\Runner\ResultCache\DefaultResultCache;
 use PHPUnit\Runner\ResultCache\NullResultCache;
 use PHPUnit\Runner\TestSuiteSorter;
 use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
@@ -41,14 +42,14 @@ use function strlen;
 use function substr;
 
 /** @internal */
-final class SuiteLoader
+final readonly class SuiteLoader
 {
-    public readonly int $testCount;
+    public int $testCount;
     /** @var list<non-empty-string> */
-    public readonly array $tests;
+    public array $tests;
 
     public function __construct(
-        private readonly Options $options,
+        private Options $options,
         OutputInterface $output,
         CodeCoverageFilterRegistry $codeCoverageFilterRegistry,
     ) {
@@ -95,7 +96,13 @@ final class SuiteLoader
             $this->options->configuration->executionOrderDefects() !== TestSuiteSorter::ORDER_DEFAULT ||
             $this->options->configuration->resolveDependencies()
         ) {
-            (new TestSuiteSorter(new NullResultCache()))->reorderTestsInSuite(
+            $resultCache = new NullResultCache();
+            if ($this->options->configuration->cacheResult()) {
+                $resultCache = new DefaultResultCache($this->options->configuration->testResultCacheFile());
+                $resultCache->load();
+            }
+
+            (new TestSuiteSorter($resultCache))->reorderTestsInSuite(
                 $testSuite,
                 $this->options->configuration->executionOrder(),
                 $this->options->configuration->resolveDependencies(),
@@ -181,7 +188,7 @@ final class SuiteLoader
             if ($test instanceof TestCase) {
                 $refClass = new ReflectionClass($test);
                 $filename = $refClass->getFileName();
-                assert(is_string($filename) && $filename !== '');
+                assert(is_string($filename));
                 $filename = $this->stripCwd($filename);
 
                 yield $filename => $test;
