@@ -16,7 +16,7 @@
   </style>
  </head>
  <body class="bg-gray-100">
-    <?php echo $__env->make('ui.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('ui.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
   <div class="container mx-auto px-4 py-20 flex flex-col md:flex-row items-center justify-between" style="background-color:#0E233E">
    <div class="text-center md:text-left md:w-1/2 px-6">
     <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-50">
@@ -161,7 +161,7 @@
 </div>
 </div>
 
-<?php echo $__env->make('ui.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('ui.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 
 <?php /**PATH C:\xampp\htdocs\camping\resources\views/home.blade.php ENDPATH**/ ?>

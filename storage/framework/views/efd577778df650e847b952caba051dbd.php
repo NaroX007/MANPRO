@@ -47,7 +47,7 @@
     </style>
  </head>
  <body class="bg-gray-100">
-    <?php echo $__env->make('ui.navbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('ui.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
  <?php
     $alamat = $camp_ground->alamat;
     $pattern = "/Jl\..+?, ([^,]+), Kec\. ([^,]+), Kota ([^,]+), (.+)/";
@@ -155,7 +155,7 @@
    </div>
   </div>      
 
-  <?php echo $__env->make('ui.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+  <?php echo $__env->make('ui.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
   <script>
     let latitude = <?php echo e($camp_ground->latitude ?? -7.250445); ?>;
     let longitude = <?php echo e($camp_ground->longitude ?? 112.768845); ?>;
